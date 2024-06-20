@@ -22,7 +22,15 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 # -----PDF IMPORTS END--------
-openai_apiverson=os.environ["AZURE_OPENAI_VERSION"] 
+# openai_apiverson=os.environ["AZURE_OPENAI_VERSION"] 
+# openai_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"] 
+# openai_apikey=os.environ["AZURE_OPENAI_API_KEY"] 
+# openai_model_name=os.environ["MODEL_DEPLOY_NAME"]
+# embed_model=os.environ["EMBED_MODEL_NAME"]
+# embed_deploy_name=os.environ["EMBED_DEPLOY_MODEL_NAME"]
+# embed_endpoint=os.environ["EMBED_ENDPOINT"]
+
+openai_apiverson=os.getenv"AZURE_OPENAI_VERSION"] 
 openai_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"] 
 openai_apikey=os.environ["AZURE_OPENAI_API_KEY"] 
 openai_model_name=os.environ["MODEL_DEPLOY_NAME"]
@@ -40,8 +48,13 @@ def hell():
     return "Hello, world!"
 
 @app.route("/ask",methods=['GET'])
-async def ask():
-    prompt=request.args
-    result=model.invoke([prompt])
-    return({"response":result["content"]})
+def hell():
+    print(openai_apiverson)
+    return {openai_apiverson}
+
+# @app.route("/ask",methods=['GET'])
+# async def ask():
+#     prompt=request.args
+#     result=model.invoke([prompt])
+#     return({"response":result["content"]})
    
