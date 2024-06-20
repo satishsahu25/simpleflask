@@ -51,6 +51,11 @@ def hell():
 def hell():
     print(openai_apiverson)
     return {openai_apiverson}
+    
+@app.route("/api",methods=['GET'])
+def hell():
+    print(openai_endpoint)
+    return {openai_endpoint}
 
 # @app.route("/ask",methods=['GET'])
 # async def ask():
