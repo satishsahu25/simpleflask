@@ -39,13 +39,13 @@ model=AzureChatOpenAI(
     azure_deployment=openai_model_name,
     )
 
-@app.route("/")
-async def hell():
+@app.route("/",methods=['GET'])
+async def basic():
     return {"Hello, world!":"hi"}
 
 
 @app.route("/ask",methods=['GET'])
-async def ask():
+async def basic_ask():
     prompt=request.args["query"]
     result=model.invoke([prompt]).content
     return {"response":result}
