@@ -30,7 +30,7 @@ import pickle
 # embed_deploy_name=os.environ["EMBED_DEPLOY_MODEL_NAME"]
 # embed_endpoint=os.environ["EMBED_ENDPOINT"]
 
-openai_apiverson=os.getenv"AZURE_OPENAI_VERSION"] 
+openai_apiverson=os.getenv("AZURE_OPENAI_VERSION") 
 openai_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"] 
 # openai_apikey=os.environ["AZURE_OPENAI_API_KEY"] 
 # openai_model_name=os.environ["MODEL_DEPLOY_NAME"]
