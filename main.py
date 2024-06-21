@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 
 app=Flask(__name__)
 # from langchain_openai import AzureChatOpenAI
-import langchain
+# import langchain
 
 from dotenv import load_dotenv
 load_dotenv()
