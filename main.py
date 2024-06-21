@@ -3,53 +3,53 @@ from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
 app=Flask(__name__)
-# from langchain_openai import AzureChatOpenAI
-# import langchain
+from langchain_openai import AzureChatOpenAI
+import langchain
 
-# from dotenv import load_dotenv
-# load_dotenv()
-# import pickle
+from dotenv import load_dotenv
+load_dotenv()
+import pickle
 
 
 # -------PDF UPLOAD ISTARTS---------
 # from fastapi import FastAPI, File, UploadFile
 
 # # -----PDF IMPORTS STARTS--------
-# from langchain_openai import AzureOpenAIEmbeddings
-# from langchain_community.vectorstores import Chroma
-# from langchain.chains import VectorDBQA
-# from langchain_openai import AzureOpenAI
-# from langchain_community.document_loaders import PyPDFLoader
-# from langchain.text_splitter import CharacterTextSplitter
-# from langchain.chains import LLMChain
-# from langchain.prompts import PromptTemplate
+from langchain_openai import AzureOpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+from langchain.chains import VectorDBQA
+from langchain_openai import AzureOpenAI
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
 
 # -----PDF IMPORTS END--------
-# openai_apiverson=os.getenv("AZURE_OPENAI_VERSION") 
-# openai_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT") 
-# openai_apikey=os.getenv("AZURE_OPENAI_API_KEY") 
-# openai_model_name=os.getenv("MODEL_DEPLOY_NAME")
-# embed_model=os.getenv("EMBED_MODEL_NAME")
-# embed_deploy_name=os.getenv("EMBED_DEPLOY_MODEL_NAME")
-# embed_endpoint=os.getenv("EMBED_ENDPOINT")
-# embed_openai_key=os.getenv("EMBED_OPENAI_KEY")
+openai_apiverson=os.getenv("AZURE_OPENAI_VERSION") 
+openai_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT") 
+openai_apikey=os.getenv("AZURE_OPENAI_API_KEY") 
+openai_model_name=os.getenv("MODEL_DEPLOY_NAME")
+embed_model=os.getenv("EMBED_MODEL_NAME")
+embed_deploy_name=os.getenv("EMBED_DEPLOY_MODEL_NAME")
+embed_endpoint=os.getenv("EMBED_ENDPOINT")
+embed_openai_key=os.getenv("EMBED_OPENAI_KEY")
 
 
-# model=AzureChatOpenAI(
-#     openai_api_version=openai_apiverson,
-#     azure_deployment=openai_model_name,
-#     )
+model=AzureChatOpenAI(
+    openai_api_version=openai_apiverson,
+    azure_deployment=openai_model_name,
+    )
 
 @app.route("/",methods=['GET'])
 async def basic():
     return {"Hello, world!":"hi"}
 
 
-# @app.route("/ask",methods=['GET'])
-# async def basic_ask():
-#     prompt=request.args["query"]
-#     result=model.invoke([prompt]).content
-#     return {"response":result}
+@app.route("/ask",methods=['GET'])
+async def basic_ask():
+    prompt=request.args["query"]
+    result=model.invoke([prompt]).content
+    return {"response":result}
 
 # UPLOAD_FOLDER = './'
 # ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
