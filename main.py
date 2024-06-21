@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import pickle
 
+
 # -------PDF UPLOAD ISTARTS---------
 # from fastapi import FastAPI, File, UploadFile
 
