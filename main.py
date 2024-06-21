@@ -6,9 +6,9 @@ app=Flask(__name__)
 # from langchain_openai import AzureChatOpenAI
 # import langchain
 
-from dotenv import load_dotenv
-load_dotenv()
-import pickle
+# from dotenv import load_dotenv
+# load_dotenv()
+# import pickle
 
 
 # -------PDF UPLOAD ISTARTS---------
