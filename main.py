@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import pickle
 
-# from pii_det import remove_sensitive_info--------------------------------------------------------------
+from pii_det import remove_sensitive_info
 
 # -------PDF UPLOAD ISTARTS---------
 # from fastapi import FastAPI, File, UploadFile
@@ -49,7 +49,7 @@ async def basic():
 @app.route("/ask",methods=['GET'])
 async def basic_ask():
     prompt=request.args["query"]
-    # prompt=remove_sensitive_info(query)-----------------------------------------
+    prompt=remove_sensitive_info(query)
     result=model.invoke([prompt]).content
     return {"response": result}
 
@@ -120,12 +120,12 @@ async def rag():
             return({"response":result.content})
 
 # -------------------------------------------------------------------------
-# from rag import RAG
-# @app.route("/index",methods=["GET", "POST"])
-# async def ragindex():
-#     query=request.args["query"]
-#     query=remove_sensitive_info(query)
-#     return RAG(query) 
+from rag import RAG
+@app.route("/index",methods=["GET", "POST"])
+async def ragindex():
+    query=request.args["query"]
+    query=remove_sensitive_info(query)
+    return RAG(query) 
 
 
    
