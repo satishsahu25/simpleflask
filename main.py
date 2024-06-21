@@ -116,8 +116,13 @@ async def rag():
             result=model.invoke([docs[0].page_content])
             return({"response":result.content})
 
+from rag import RAG
 
-
+@app.route("/index",methods=["GET", "POST"])
+async def ragindex():
+    query=request.args["query"]
+    query=remove_sensitive_info(query)
+    return RAG(query) 
 
 
    
