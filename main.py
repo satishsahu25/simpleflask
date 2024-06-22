@@ -2,6 +2,8 @@ import os
 from flask import Flask, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 
+from pii_det import remove_sensitive_info
+
 app=Flask(__name__)
 from langchain_openai import AzureChatOpenAI
 import langchain
@@ -9,8 +11,6 @@ import langchain
 from dotenv import load_dotenv
 load_dotenv()
 import pickle
-
-from pii_det import remove_sensitive_info
 
 # -------PDF UPLOAD ISTARTS---------
 # from fastapi import FastAPI, File, UploadFile
@@ -26,32 +26,33 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 
 # -----PDF IMPORTS END--------
-openai_apiverson=os.getenv("AZURE_OPENAI_VERSION") 
+openai_apiverson=os.getenv("AZURE_VERSION") 
 openai_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT") 
 openai_apikey=os.getenv("AZURE_OPENAI_API_KEY") 
-openai_model_name=os.getenv("MODEL_DEPLOY_NAME")
+openai_model_name=os.getenv("CHAT_COMPLETIONS_DEPLOYMENT_NAME")
 embed_model=os.getenv("EMBED_MODEL_NAME")
 embed_deploy_name=os.getenv("EMBED_DEPLOY_MODEL_NAME")
 embed_endpoint=os.getenv("EMBED_ENDPOINT")
 embed_openai_key=os.getenv("EMBED_OPENAI_KEY")
 
-
 model=AzureChatOpenAI(
     openai_api_version=openai_apiverson,
     azure_deployment=openai_model_name,
+    api_key=openai_apikey
     )
 
-@app.route("/",methods=['GET'])
-async def basic():
+@app.route("/")
+async def hell():
     return {"Hello, world!":"hi"}
 
 
 @app.route("/ask",methods=['GET'])
-async def basic_ask():
+async def ask():
     prompt=request.args["query"]
-    prompt=remove_sensitive_info(query)
     result=model.invoke([prompt]).content
-    return {"response": result}
+    return {"response":result}
+
+# # -----------------------------
 
 UPLOAD_FOLDER = './'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -60,7 +61,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 
 UPLOADED_FILE_NAME=""
 file_path=os.getenv("file_path")
@@ -86,13 +86,13 @@ def upload_file():
                 pickle.dump("./"+filename, file)
     return "uploaded"
 
-
+# ----------RAG-----------------------------
 
 loaded_data = ""
 @app.route("/rag",methods=["GET", "POST"])
 async def rag():
             query=request.args["query"]
-            # query=remove_sensitive_info(query)------------------------------------------------------------------
+            query=remove_sensitive_info(query)
             # # loading--------------
             # Open the file in binary mode
             with open(os.getenv("file_path"), 'rb') as file:
@@ -119,16 +119,15 @@ async def rag():
             result=model.invoke([docs[0].page_content])
             return({"response":result.content})
 
-# -------------------------------------------------------------------------
 from rag import RAG
+
 @app.route("/index",methods=["GET", "POST"])
 async def ragindex():
     query=request.args["query"]
     query=remove_sensitive_info(query)
-    return RAG(query) 
-
+    return RAG(query)  
+    # return RAG("How do I download the Control Room certificate using Google Chrome?")  
 
    
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host="0.0.0.0", debug=True, port=8000)
+  app.run(debug=True)
