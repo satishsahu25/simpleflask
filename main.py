@@ -5,6 +5,9 @@ from werkzeug.utils import secure_filename
 from pii_det import remove_sensitive_info
 
 app=Flask(__name__)
+from flask_cors import CORS
+CORS(app)
+
 from langchain_openai import AzureChatOpenAI
 import langchain
 
