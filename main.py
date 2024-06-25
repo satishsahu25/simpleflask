@@ -51,6 +51,7 @@ async def hell():
 
 @app.route("/ask",methods=['GET'])
 async def ask():
+    print(request)
     prompt=request.args["query"]
     result=model.invoke([prompt]).content
     return {"response":result}
