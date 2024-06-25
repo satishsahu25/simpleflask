@@ -60,7 +60,7 @@ async def ask():
     user_id = request.args.get('user_id', default=None, type=str)
     file_url = request.args.get('file_url', default=None, type=str)
 
-    if file_url is not "":
+    if file_url is not None:
         fileloader=PyPDFLoader(file_url)
         documents=fileloader.load() 
         # # chunking ---------
