@@ -52,37 +52,37 @@ async def hell():
 @app.route("/ask",methods=['GET'])
 async def ask():
     # print(request)
-    # prompt=request.args["query"]
-    # result=model.invoke([prompt]).content
-    # return {"response":result}
-    query = request.args.get('query', default=None, type=str)
-    conversation_id = request.args.get('conversation_id', default=None, type=str)
-    user_id = request.args.get('user_id', default=None, type=str)
-    file_url = request.args.get('file_url', default=None, type=str)
+    prompt=request.args["query"]
+    result=model.invoke([prompt]).content
+    return {"response":result}
+    # query = request.args.get('query', default=None, type=str)
+    # conversation_id = request.args.get('conversation_id', default=None, type=str)
+    # user_id = request.args.get('user_id', default=None, type=str)
+    # file_url = request.args.get('file_url', default=None, type=str)
 
-    if file_url is not None:
-        fileloader=PyPDFLoader(file_url)
-        documents=fileloader.load() 
-        # # chunking ---------
-        text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
-        texts=text_splitter.split_documents(documents) 
-        # embeddings-------------
-        embeddings= AzureOpenAIEmbeddings(
-        model=embed_model,
-        azure_deployment=embed_deploy_name,
-        azure_endpoint=embed_endpoint,
-        openai_api_key=embed_openai_key,
-        openai_api_version=openai_apiverson
-        )
-        db=Chroma.from_documents(texts,embeddings)
-        docs = db.similarity_search(query,k=1)
-        # print(docs)
-        # text generation------------------------
-        result=model.invoke([docs[0].page_content])
-        return result
-    else:
-        result=model.invoke([query]).content
-        return ({"response":result.content})
+    # if file_url is not None:
+    #     fileloader=PyPDFLoader(file_url)
+    #     documents=fileloader.load() 
+    #     # # chunking ---------
+    #     text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
+    #     texts=text_splitter.split_documents(documents) 
+    #     # embeddings-------------
+    #     embeddings= AzureOpenAIEmbeddings(
+    #     model=embed_model,
+    #     azure_deployment=embed_deploy_name,
+    #     azure_endpoint=embed_endpoint,
+    #     openai_api_key=embed_openai_key,
+    #     openai_api_version=openai_apiverson
+    #     )
+    #     db=Chroma.from_documents(texts,embeddings)
+    #     docs = db.similarity_search(query,k=1)
+    #     # print(docs)
+    #     # text generation------------------------
+    #     result=model.invoke([docs[0].page_content])
+    #     return result
+    # else:
+    #     result=model.invoke([query]).content
+    #     return ({"response":result.content})
 
 # # -----------------------------
 
