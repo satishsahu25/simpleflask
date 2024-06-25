@@ -55,7 +55,7 @@ async def ask():
     # prompt=request.args["query"]
     # result=model.invoke([prompt]).content
     # return {"response":result}
-    query = request.args.get('content', default=None, type=str)
+    query = request.args.get('query', default=None, type=str)
     conversation_id = request.args.get('conversation_id', default=None, type=str)
     user_id = request.args.get('user_id', default=None, type=str)
     file_url = request.args.get('file_url', default=None, type=str)
