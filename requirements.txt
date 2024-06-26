@@ -18,7 +18,7 @@ pydantic==2.7.3
 python-dotenv==1.0.1
 tenacity==8.3.0
 flask_cors
-
+pdfplumber
 azure-ai-textanalytics
 azure-core
 spacy
