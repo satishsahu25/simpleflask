@@ -4,8 +4,8 @@ from pii_det import remove_sensitive_info
 
 from langchain_openai import AzureChatOpenAI
 import langchain
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 
 app=Flask(__name__)
