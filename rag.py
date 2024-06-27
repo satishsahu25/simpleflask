@@ -6,6 +6,8 @@ from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 from openai import AzureOpenAI
 from classify_query import extract_features, classify_text
+from az_cdb import save_conversation_history
+from final_processing import construct_final_query
 
 # ---------------Fetch credentials------------------------------#
 load_dotenv()
@@ -13,13 +15,10 @@ search_service_endpoint = os.getenv("AI_SEARCH_ENDPOINT")
 api_key = os.getenv("AI_SEARCH_APIKEY")
 indexer_name = os.getenv("INDEXER_NAME")
 index_name = os.getenv("INDEX_NAME")
-
 azure_openai_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT")
 azure_openai_api_key = os.getenv("AZURE_OPENAI_API_KEY")
 chat_deployment_name = os.getenv("CHAT_COMPLETIONS_DEPLOYMENT_NAME")
 embedding_deployment_name = os.getenv("EMBEDDINGS_DEPLOYMENT_NAME")
-
-
 
 # -----------Initializing Azure services clients----------------#
 search_client = SearchClient(endpoint=search_service_endpoint, 
@@ -67,10 +66,8 @@ def retrieval(query: str, vector_query, category: str):
         return results_hyb_rerank
 
 system_prompt = "You are a helpful assistant. You are well-versed in logical reasoning and answering user queries."
-query_prompt = "Here is the question provided by the user: "
-knowledge_base_prompt = "Below are the relevant contextual documents retrieved from a knowledge base according to the query.\
-Use this as the basis of your answer. Keep in mind that there may be some overlap of the corresponding documents' content"
-def generate_response(query: str, docs):
+query_prompt = "Below is the past conversation history and relevant documents retrieved from a knowledge base."
+def generate_response(query: str):
     completion = azure_openai_client.chat.completions.create(
                  model=chat_deployment_name,
                  temperature=0,
@@ -81,7 +78,7 @@ def generate_response(query: str, docs):
                     },
                     {
                         "role": "user",
-                        "content": f"{query_prompt}{query}\n{knowledge_base_prompt}:\n{docs}\nAnswer: "
+                        "content": f"{query_prompt}\n{query}\n If the answer is not present in the chat history or provided documents, give the answer from your own knowledge.\n So, the answer is:"
                     }
                  ]
             )
@@ -89,7 +86,7 @@ def generate_response(query: str, docs):
     return answer
 
 #-------------------------Main RAG function-----------------------#
-def RAG(query: str):
+def RAG(query: str, user_id: str):
     # Classifiy the query
     features = extract_features(query)
     category = classify_text(features)
@@ -105,8 +102,18 @@ def RAG(query: str):
     results = retrieval(query, vector_query, category)
     top_results = [result["chunk"] for i, result in enumerate(results) if i<k]
 
-    # Construct the input for the GPT model
+    # Construct the input for the GPT model and get response
     docs = "\n\n".join(f"Document-{i+1}:\n{doc}" for i, doc in enumerate(top_results))
+    final_query, buffer = construct_final_query(user_id, query, docs)
+    answer = generate_response(final_query)
 
-    answer = generate_response(query, docs)
+    # Update/save coversation history
+    if buffer:
+        new_entry = f"Q: {query}\nA: {answer}"
+        buffer.append(new_entry)
+        save_conversation_history(user_id, buffer)
+    else:
+        new_entry = [f"Q: {query}\nA: {answer}"]
+        save_conversation_history(user_id, new_entry)
+
     return answer
