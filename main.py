@@ -57,6 +57,7 @@ def ask():
             if not documents:
                  return {"response": "Not a txt/pdf file!"}
             else:
+                return {"resp":documents.page_content}
                 # chunking --------------
                 text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
                 texts = text_splitter.split_documents(documents) 
