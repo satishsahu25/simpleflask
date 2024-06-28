@@ -106,11 +106,11 @@ def ask():
                             new_entry = [f"Q: {query}\nA: {answer}"]
                             save_conversation_history(user_id, new_entry)
                         return {"response": answer}
-                    else:
+                    except:
+                            return {"response":"error in getting file"}
+                else:
                         query=remove_sensitive_info(query)
                         return {"response":RAG(query, user_id)}
-                except:
-                     return {"response":"error in getting file"}
     
 
 if __name__ == '__main__':
