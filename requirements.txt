@@ -19,6 +19,9 @@ azure-ai-textanalytics==5.3.0
 pdfplumber==0.11.1 
 Flask-Cors==4.0.1
 
+azure-storage-blob==12.20.0 
+azure-identity==1.17.1
+
 
 annotated-types==0.7.0
 anyio==4.4.0
