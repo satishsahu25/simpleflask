@@ -64,17 +64,10 @@ from new_download import getpdf
 #     return documents
 
 
-@app.route("/")
-async def hell():
+
+@app.route("/",methods=['GET','POST'])
+def basic():
     return {"Hello, world!":"hi"}
-
-
-@app.route("/ask",methods=['GET','POST'])
-def ask():
-@app.route("/")
-async def hell():
-    return {"Hello, world!":"hi"}
-
 
 @app.route("/ask",methods=['GET','POST'])
 def ask():
@@ -83,7 +76,7 @@ def ask():
                 file_url = request.args.get('file_url', default="", type=str)
                 if file_url != "":
                     documents=getpdf(file_url)
-                    if documents.error is "":
+                    try:
                         # # chunking ---------
                         text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
                         texts=text_splitter.split_documents(documents) 
@@ -116,8 +109,9 @@ def ask():
                     else:
                         query=remove_sensitive_info(query)
                         return {"response":RAG(query, user_id)}
-                else:
+                except:
                      return {"response":"error in getting file"}
     
+
 if __name__ == '__main__':
   app.run(host="0.0.0.0", debug=True, port=8000)
