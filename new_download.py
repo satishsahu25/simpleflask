@@ -10,7 +10,7 @@ def getpdf(url):
         response = requests.get(url)
         response.raise_for_status()
         print(response.content)
-        return "hi
+        return "hi"
         # pdf_stream = io.BytesIO(response.content)
         # documents = []
 
