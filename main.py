@@ -53,8 +53,8 @@ def basic():
 def ask():
                 query = request.args.get('query', default=None, type=str)
                 user_id = request.args.get('user_id', default=None, type=str)
-                file_url = request.args.get('file_url', default="", type=str)
-                if file_url != "":
+                file_url = request.args.get('file_url', default="x", type=str)
+                if file_url != "x":
                     documents=getpdf(file_url)
                     return {"response":documents}
                     try:
