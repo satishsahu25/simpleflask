@@ -12,7 +12,7 @@ account_key = os.getenv('AZURE_BLOB_STORAGE_ACCOUNT_KEY')
 def extract_text(blob_url: str):
     # Create a BlobClient object using the blob URL
     blob_client = BlobClient.from_blob_url(blob_url, credential=account_key)
-
+    return [Document(page_content=account_key, metadata={"source": blob_url})]
     # Determine the type of file
     file_type = blob_url.split('.')[-1]
 
