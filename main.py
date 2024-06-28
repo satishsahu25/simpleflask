@@ -55,9 +55,8 @@ def ask():
                 user_id = request.args.get('user_id', default=None, type=str)
                 file_url = request.args.get('file_url', default="", type=str)
                 if file_url != "":
-                    print("hello url")
                     documents=getpdf(file_url)
-                    return {"response":file_url}
+                    return {"response":documents}
                     try:
                         # chunking ---------
                         text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
