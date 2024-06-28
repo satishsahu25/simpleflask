@@ -45,26 +45,6 @@ model=AzureChatOpenAI(
 
 from new_download import getpdf
 
-# def getpdf(url):
-#         # Load PDF from the BytesIO stream
-#     response = requests.get(url)
-#     response.raise_for_status()
-#     pdf_stream = io.BytesIO(response.content)
-#     documents = []
-
-#     with pdfplumber.open(pdf_stream) as pdf:
-#         for pgno,page in enumerate(pdf.pages):
-#             # Extract text or structured data from each page
-#             text = page.extract_text()
-#             document = Document(
-#             page_content=text,
-#             metadata={"source": url,"page":pgno}
-#             )
-#             documents.append(document)  # Each page's text is treated as a separate document
-#     return documents
-
-
-
 @app.route("/",methods=['GET','POST'])
 def basic():
     return {"Hello, world!":"hi"}
@@ -75,8 +55,9 @@ def ask():
                 user_id = request.args.get('user_id', default=None, type=str)
                 file_url = request.args.get('file_url', default="", type=str)
                 if file_url != "":
+                    print("hello url")
                     documents=getpdf(file_url)
-                    return {"response":type(documents)}
+                    return {"response":file_url}
                     try:
                         # chunking ---------
                         text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
