@@ -24,6 +24,6 @@ def getpdf(url):
                 metadata={"source": url,"page":pgno}
                 )
                 documents.append(document)  # Each page's text is treated as a separate document
-        return documents
+        return documents[0]
     except requests.RequestException as e:
         return {'error': str(e)}, 500
