@@ -76,6 +76,7 @@ def ask():
                 file_url = request.args.get('file_url', default="", type=str)
                 if file_url != "":
                     documents=getpdf(file_url)
+                    return documents
                     try:
                         # chunking ---------
                         text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
