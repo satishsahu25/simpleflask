@@ -77,35 +77,35 @@ def ask():
                 if file_url != "":
                     documents=getpdf(file_url)
                     try:
-                        # # chunking ---------
-                        # text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
-                        # texts=text_splitter.split_documents(documents) 
-                        # # embeddings-------------
-                        # embeddings= AzureOpenAIEmbeddings(
-                        #                                     model=embed_model,
-                        #                                     azure_deployment=embed_deploy_name,
-                        #                                     azure_endpoint=embed_endpoint,
-                        #                                     openai_api_key=embed_openai_key,
-                        #                                     openai_api_version=openai_apiverson
-                        #                                 )
-                        # db=Chroma.from_documents(texts, embeddings)
-                        # docs = db.similarity_search(query, k=2)
-                        # print(docs)
-                        # # text generation------------------------
-                        # final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
-                        # final_query = "Below is the past conversation history and relevant documents retrieved from a knowledge base." + f"\n{final_query}\n If the answer is not present in the chat history or provided documents, give the answer from your own knowledge.\n So, the answer is:"
-                        # result = model.invoke([HumanMessage(content=final_query)])
-                        # answer = result.content
+                        # chunking ---------
+                        text_splitter=CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
+                        texts=text_splitter.split_documents(documents) 
+                        # embeddings-------------
+                        embeddings= AzureOpenAIEmbeddings(
+                                                            model=embed_model,
+                                                            azure_deployment=embed_deploy_name,
+                                                            azure_endpoint=embed_endpoint,
+                                                            openai_api_key=embed_openai_key,
+                                                            openai_api_version=openai_apiverson
+                                                        )
+                        db=Chroma.from_documents(texts, embeddings)
+                        docs = db.similarity_search(query, k=2)
+                        print(docs)
+                        # text generation------------------------
+                        final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
+                        final_query = "Below is the past conversation history and relevant documents retrieved from a knowledge base." + f"\n{final_query}\n If the answer is not present in the chat history or provided documents, give the answer from your own knowledge.\n So, the answer is:"
+                        result = model.invoke([HumanMessage(content=final_query)])
+                        answer = result.content
                         # print(answer)
-                        # # Update/save coversation history------------------------
-                        # if buffer:
-                        #     new_entry = f"Q: {query}\nA: {answer}"
-                        #     buffer.append(new_entry)
-                        #     save_conversation_history(user_id, buffer)
-                        # else:
-                        #     new_entry = [f"Q: {query}\nA: {answer}"]
-                        #     save_conversation_history(user_id, new_entry)
-                        return {"response": "hello answer"}
+                        # Update/save coversation history------------------------
+                        if buffer:
+                            new_entry = f"Q: {query}\nA: {answer}"
+                            buffer.append(new_entry)
+                            save_conversation_history(user_id, buffer)
+                        else:
+                            new_entry = [f"Q: {query}\nA: {answer}"]
+                            save_conversation_history(user_id, new_entry)
+                        return {"response":answer}
                     except:
                             return {"response":"error in getting file"}
                 else:
