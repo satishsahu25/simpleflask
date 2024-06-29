@@ -54,7 +54,7 @@ def ask():
         documents = extract_text(file_url)
         # return {"response": documents}
         try:
-            if not documents:
+            if documents==None:
                  return {"response": "Not a txt/pdf file!"}
             else:
                 return {"resp":documents.page_content}
