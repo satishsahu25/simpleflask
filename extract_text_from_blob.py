@@ -12,9 +12,9 @@ account_key = os.getenv('AZURE_BLOB_STORAGE_ACCOUNT_KEY')
 def extract_text(blob_url: str):
     # Create a BlobClient object using the blob URL
     blob_client = BlobClient.from_blob_url(blob_url, credential=account_key)
-    return {"response":account_key}
     # Determine the type of file
     file_type = blob_url.split('.')[-1]
+
     blob_content=[]
 
     # For txt file
@@ -31,6 +31,7 @@ def extract_text(blob_url: str):
         blob_pdf.download_to_stream(stream)
 
         with pdfplumber.open(stream) as pdf:
+            return {"response":pdf.pages}
             for page_num, page in enumerate(pdf.pages):
                 # Extract text or structured data from each page
                 text = page.extract_text()
