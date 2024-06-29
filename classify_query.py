@@ -29,7 +29,7 @@ def extract_features(query: str):
 def classify_text(features):
     if features["num_sentences"]<=2 and features['lexical_density']<0.4 and features["syntactic_tree_depth"]<=6 :
         return "simple"
-    elif (features["num_sentences"]>2 and features["num_sentences"]<=4) (features['lexical_density']>=0.4 and features['lexical_density']<0.65) and (features["syntactic_tree_depth"]>6 and features["syntactic_tree_depth"]<=8) and (features["named_entity_count"]>=2 and features["named_entity_count"]<4):
+    elif (features["num_sentences"]>2 and features["num_sentences"]<=4) and (features['lexical_density']>=0.4 and features['lexical_density']<0.65) and (features["syntactic_tree_depth"]>6 and features["syntactic_tree_depth"]<=8) and (features["named_entity_count"]>=2 and features["named_entity_count"]<4):
         return "intermediate"
     elif features["num_sentences"]>4 and features['lexical_density']>=0.65 and features["syntactic_tree_depth"]>8 and features["named_entity_count"]>4:
         return "complex"
