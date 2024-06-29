@@ -62,7 +62,7 @@ def ask():
                 text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
                 texts = text_splitter.split_documents(documents) 
                 # embeddings-------------
-                return {"resp":embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
+                # return {"resp":embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
                 embeddings = AzureOpenAIEmbeddings(
                                                     model=embed_model,
                                                     azure_deployment=embed_deploy_name,
@@ -70,6 +70,7 @@ def ask():
                                                     openai_api_key=embed_openai_key,
                                                     openai_api_version=openai_apiverson
                                                 )
+                return {"response":embeddings}
                 db = Chroma.from_documents(texts, embeddings)
                 docs = db.similarity_search(query, k=1)
                 
