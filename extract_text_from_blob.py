@@ -12,14 +12,14 @@ account_key = os.getenv('AZURE_BLOB_STORAGE_ACCOUNT_KEY')
 def extract_text(blob_url: str):
     # Create a BlobClient object using the blob URL
     blob_client = BlobClient.from_blob_url(blob_url, credential=account_key)
-    return [Document(page_content=account_key, metadata={"source": blob_url})]
+    return {"response":account_key}
     # Determine the type of file
     file_type = blob_url.split('.')[-1]
+    blob_content=[]
 
     # For txt file
     if file_type=='txt':
         text = blob_client.download_blob().readall().decode('utf-8') # Download the blob content and store it in a variable
-        blob_content = []
         blob_content.append(Document(page_content=text, metadata={"source": blob_url}))
         # print(blob_content)
 
@@ -29,7 +29,6 @@ def extract_text(blob_url: str):
         
         stream = BytesIO()
         blob_pdf.download_to_stream(stream)
-        blob_content = []
 
         with pdfplumber.open(stream) as pdf:
             for page_num, page in enumerate(pdf.pages):
