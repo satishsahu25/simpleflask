@@ -73,7 +73,7 @@ def ask():
                 # return {"response":embeddings}
                 db = Chroma.from_documents(texts, embeddings)
                 docs = db.similarity_search(query, k=1)
-                return {"response":docs[0].page_content}
+                return {"response":docs}
                 # print(docs)
                 # text generation------------------------
                 final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
