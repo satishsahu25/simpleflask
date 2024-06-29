@@ -34,7 +34,7 @@ def extract_text(blob_url: str):
             for page_num, page in enumerate(pdf.pages):
                 # Extract text or structured data from each page
                 text = page.extract_text()
-                return {"response":text}
+                # return {"response":text}
                 document = Document(
                                     page_content=text,
                                     metadata={"source": blob_url, "page": page_num}
