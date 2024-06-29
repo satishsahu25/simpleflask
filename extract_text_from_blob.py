@@ -26,12 +26,11 @@ def extract_text(blob_url: str):
     # For pdf file
     elif file_type=='pdf':
         blob_pdf = blob_client.download_blob()
-        
+        return {"response":"pages"}
         stream = BytesIO()
         blob_pdf.download_to_stream(stream)
 
         with pdfplumber.open(stream) as pdf:
-            return {"response":pdf.pages}
             for page_num, page in enumerate(pdf.pages):
                 # Extract text or structured data from each page
                 text = page.extract_text()
