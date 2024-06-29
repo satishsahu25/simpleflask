@@ -40,7 +40,7 @@ model=AzureChatOpenAI(
     api_key=openai_apikey
     )
 
-@app.route("/", methods=['GET','POST'])
+@app.route("/", methods=['GET','POST','PUT'])
 def basic():
     return {"Hello, world!": "hi"}
 
@@ -62,6 +62,7 @@ def ask():
                 text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
                 texts = text_splitter.split_documents(documents) 
                 # embeddings-------------
+                return {"resp":embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
                 embeddings = AzureOpenAIEmbeddings(
                                                     model=embed_model,
                                                     azure_deployment=embed_deploy_name,
@@ -71,7 +72,7 @@ def ask():
                                                 )
                 db = Chroma.from_documents(texts, embeddings)
                 docs = db.similarity_search(query, k=1)
-                return {"resp":docs[0].page_content}
+                
                 # print(docs)
                 # text generation------------------------
                 final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
