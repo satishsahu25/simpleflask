@@ -70,10 +70,10 @@ def ask():
                                                     openai_api_key=embed_openai_key,
                                                     openai_api_version=openai_apiverson
                                                 )
-                return {"response":embeddings}
+                # return {"response":embeddings}
                 db = Chroma.from_documents(texts, embeddings)
-                docs = db.similarity_search(query, k=1)
-                
+                docs = db.similarity_search(query, k=2)
+                return {"response":docs[0].page_content}
                 # print(docs)
                 # text generation------------------------
                 final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
