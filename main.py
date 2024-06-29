@@ -57,7 +57,7 @@ def ask():
             if documents==None:
                  return {"response": "Not a txt/pdf file!"}
             else:
-                return {"resp":documents[0].page_content}
+                
                 # chunking --------------
                 text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
                 texts = text_splitter.split_documents(documents) 
@@ -70,7 +70,8 @@ def ask():
                                                     openai_api_version=openai_apiverson
                                                 )
                 db = Chroma.from_documents(texts, embeddings)
-                docs = db.similarity_search(query, k=2)
+                docs = db.similarity_search(query, k=1)
+                return {"resp":docs[0].page_content}
                 # print(docs)
                 # text generation------------------------
                 final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
