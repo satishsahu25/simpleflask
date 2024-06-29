@@ -72,7 +72,7 @@ def ask():
                                                 )
                 # return {"response":embeddings}
                 db = Chroma.from_documents(texts, embeddings)
-                docs = db.similarity_search(query, k=2)
+                docs = db.similarity_search(query, k=1)
                 return {"response":docs[0].page_content}
                 # print(docs)
                 # text generation------------------------
