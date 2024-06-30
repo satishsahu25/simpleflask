@@ -88,20 +88,23 @@ def ask():
                                                     openai_api_key=embed_openai_key,
                                                     openai_api_version=openai_apiverson
                                                 )
-                # return {"response":embeddings}
+                # return {"response": embeddings}
                 db = Chroma.from_documents(documents=texts, embedding=embeddings)
-                # docs = db.similarity_search(query, k=1)
-                # return {"response":docs}
+                try:
+                    docs = db.similarity_search(query, k=1)
+                    return {"response": docs}
+                except:
+                    return {"response": "chromadb chutiya hai"}
+                    
                 retriever=db.as_retriever()
-                question_answer_chain = create_stuff_documents_chain(model, ChatPromptTemplate.from_messages(
-    [
-        ("system", "You are an assistant for question-answering tasks"),
-        ("human", "{input}"),
-    ]
-))
+                question_answer_chain = create_stuff_documents_chain(model, ChatPromptTemplate.from_messages([
+                        ("system", "You are an assistant for question-answering tasks"),
+                        ("human", "{input}"),
+                    ]
+                ))
                 rag_chain = create_retrieval_chain(retriever, question_answer_chain)
                 results = rag_chain.invoke({"input": query})
-                return {"response":results} 
+                # return {"response": results} 
                 # print(docs)
                 # text generation------------------------
                 final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
@@ -117,7 +120,7 @@ def ask():
                 else:
                     new_entry = [f"Q: {query}\nA: {answer}"]
                     save_conversation_history(user_id, new_entry)
-                return {"response":answer}
+                return {"response": answer}
         except:
                 return {"response": "error in getting file"}
     else:
