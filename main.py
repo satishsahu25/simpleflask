@@ -95,7 +95,7 @@ def ask():
                 
             try:
                 docs = db.similarity_search(query, k=1)
-                return {"response": f'{type(docs)}'}
+                return {"response": f'{docs}'}
             
             except:
                 return {"response": "chromadb chutiya hai"}
