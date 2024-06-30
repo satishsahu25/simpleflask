@@ -65,29 +65,40 @@ def ask():
              return {"response": "Not a txt/pdf file!"}
         else:
             # chunking --------------
-            text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
-            texts = text_splitter.split_documents(documents) 
+            try:
+                text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
+            except:
+                return {"res": "char splitter error"}
+            
+            try:
+                texts = text_splitter.split_documents(documents)
+            except:
+                return {"res": "Not splitting docs"}
+             
             # embeddings-------------
             # return {"resp": embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
+            
             try:
-                    embeddings = AzureOpenAIEmbeddings(
-                                                    model=embed_deploy_name,
-                                                    azure_endpoint=embed_endpoint,
-                                                    openai_api_key=embed_openai_key,
-                                                    openai_api_version=openai_apiverson
-                                                )
+                embeddings = AzureOpenAIEmbeddings(
+                                                model=embed_deploy_name,
+                                                azure_endpoint=embed_endpoint,
+                                                openai_api_key=embed_openai_key,
+                                                openai_api_version=openai_apiverson
+                                            )
             except:
                     return {"res": "embed not init"}
+            
             try:
-                    db = Chroma.from_documents(documents=texts, embedding=embeddings)
+                db = Chroma.from_documents(documents=texts, embedding=embeddings)
             except:
-                    return {"res": "Embeds not working"}
+                return {"res": "Embeds not working"}
                 
             try:
-                    docs = db.similarity_search(query, k=1)
-                    return {"response": type(docs)}
+                docs = db.similarity_search(query, k=1)
+                return {"response": f'{type(docs)}'}
+            
             except:
-                    return {"response": "chromadb chutiya hai"}
+                return {"response": "chromadb chutiya hai"}
                 
             # retriever=db.as_retriever()
             # question_answer_chain = create_stuff_documents_chain(model, ChatPromptTemplate.from_messages([
