@@ -44,9 +44,6 @@ model=AzureChatOpenAI(
 def basic():
     return {"Hello, world!": "hi"}
 
-from langchain.chains import create_retrieval_chain
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
 
 
 @app.route("/ask",methods=['GET', 'POST', 'PUT'])
@@ -76,7 +73,6 @@ def ask():
                 return {"res": "Not splitting docs"}
              
             # embeddings-------------
-            # return {"resp": embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
             
             try:
                 embeddings = AzureOpenAIEmbeddings(
@@ -92,41 +88,27 @@ def ask():
                 db = Chroma.from_documents(documents=texts, embedding=embeddings)
             except:
                 return {"res": "Embeds not working"}
-                
+
+            docs = db.similarity_search(query, k=3)
             try:
-                docs = db.similarity_search(query, k=1)
-                return {"response": f'{docs}'}
-            
-            except:
-                return {"response": "chromadb chutiya hai"}
                 
-            # retriever=db.as_retriever()
-            # question_answer_chain = create_stuff_documents_chain(model, ChatPromptTemplate.from_messages([
-            #         ("system", "You are an assistant for question-answering tasks"),
-            #         ("human", "{input}"),
-            #     ]
-            # ))
-            # rag_chain = create_retrieval_chain(retriever, question_answer_chain)
-            # results = rag_chain.invoke({"input": query})
-            # # return {"response": results} 
-            # # print(docs)
-            # # text generation------------------------
-            # final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
-            # final_query = "Below is the past conversation history and relevant documents retrieved from a knowledge base." + f"\n{final_query}\n If the answer is not present in the chat history or provided documents, give the answer from your own knowledge.\n So, the answer is:"
-            # result = model.invoke([HumanMessage(content=final_query)])
-            # answer = result.content
-            # # print(answer)
-            # # Update/save coversation history------------------------
-            # if buffer:
-            #     new_entry = f"Q: {query}\nA: {answer}"
-            #     buffer.append(new_entry)
-            #     save_conversation_history(user_id, buffer)
-            # else:
-            #     new_entry = [f"Q: {query}\nA: {answer}"]
-            #     save_conversation_history(user_id, new_entry)
-            # return {"response": answer}
-        # except:
-        #         return {"response": "error in getting file"}
+                # text generation------------------------
+                final_query, buffer = construct_final_query(user_id, query, docs[0].page_content)
+                final_query = "Below is the past conversation history and relevant documents retrieved from a knowledge base." + f"\n{final_query}\n If the answer is not present in the chat history or provided documents, give the answer from your own knowledge.\n So, the answer is:"
+                result = model.invoke([HumanMessage(content=final_query)])
+                answer = result.content
+                # print(answer)
+                # Update/save coversation history------------------------
+                if buffer:
+                    new_entry = f"Q: {query}\nA: {answer}"
+                    buffer.append(new_entry)
+                    save_conversation_history(user_id, buffer)
+                else:
+                    new_entry = [f"Q: {query}\nA: {answer}"]
+                    save_conversation_history(user_id, new_entry)
+                return {"response": answer}
+            except:
+                    return {"response": "error in getting file"}
     else:
         query = remove_sensitive_info(query)
         return {"response": RAG(query, user_id)}
