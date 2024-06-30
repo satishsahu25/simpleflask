@@ -70,21 +70,24 @@ def ask():
             # embeddings-------------
             # return {"resp": embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
             try:
-                embeddings = AzureOpenAIEmbeddings(
+                    embeddings = AzureOpenAIEmbeddings(
                                                     model=embed_deploy_name,
                                                     azure_endpoint=embed_endpoint,
                                                     openai_api_key=embed_openai_key,
                                                     openai_api_version=openai_apiverson
                                                 )
-                db = Chroma.from_documents(documents=texts, embedding=embeddings)
             except:
-                return {"res": "Embeds not working"}
+                    return {"res": "embed not init"}
+            try:
+                    db = Chroma.from_documents(documents=texts, embedding=embeddings)
+            except:
+                    return {"res": "Embeds not working"}
                 
             try:
-                docs = db.similarity_search(query, k=1)
-                return {"response": type(docs)}
+                    docs = db.similarity_search(query, k=1)
+                    return {"response": type(docs)}
             except:
-                return {"response": "chromadb chutiya hai"}
+                    return {"response": "chromadb chutiya hai"}
                 
             # retriever=db.as_retriever()
             # question_answer_chain = create_stuff_documents_chain(model, ChatPromptTemplate.from_messages([
