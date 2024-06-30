@@ -55,7 +55,11 @@ def ask():
     user_id = request.args.get('user_id', default=None, type=str)
     file_url = request.args.get('file_url', default="x", type=str)
     if file_url != "x":
-        documents = extract_text(file_url)
+        try:
+            documents = extract_text(file_url)
+        except:
+            return {"res": "cant fetch docs"}
+            
         # try:
         if documents==None:
              return {"response": "Not a txt/pdf file!"}
@@ -65,15 +69,19 @@ def ask():
             texts = text_splitter.split_documents(documents) 
             # embeddings-------------
             # return {"resp": embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
-            embeddings = AzureOpenAIEmbeddings(
-                                                model=embed_model,
-                                                azure_deployment=embed_deploy_name,
-                                                azure_endpoint=embed_endpoint,
-                                                openai_api_key=embed_openai_key,
-                                                openai_api_version=openai_apiverson
-                                            )
-            # return {"response": embeddings}
-            db = Chroma.from_documents(documents=texts, embedding=embeddings)
+            try:
+                embeddings = AzureOpenAIEmbeddings(
+                                                    model=embed_model,
+                                                    azure_deployment=embed_deploy_name,
+                                                    azure_endpoint=embed_endpoint,
+                                                    openai_api_key=embed_openai_key,
+                                                    openai_api_version=openai_apiverson
+                                                )
+                # return {"response": embeddings}
+                db = Chroma.from_documents(documents=texts, embedding=embeddings)
+            except:
+                return {"res": "Embeds not working"}
+                
             try:
                 docs = db.similarity_search(query, k=1)
                 return {"response": type(docs)}
