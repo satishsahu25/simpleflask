@@ -29,16 +29,16 @@ openai_apiverson=os.getenv("AZURE_VERSION")
 openai_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT") 
 openai_apikey=os.getenv("AZURE_OPENAI_API_KEY") 
 openai_model_name=os.getenv("CHAT_COMPLETIONS_DEPLOYMENT_NAME")
-embed_model=os.getenv("EMBED_MODEL_NAME")
+# embed_model=os.getenv("EMBED_MODEL_NAME")
 embed_deploy_name=os.getenv("EMBED_DEPLOY_MODEL_NAME")
 embed_endpoint=os.getenv("EMBED_ENDPOINT")
 embed_openai_key=os.getenv("EMBED_OPENAI_KEY")
 
 model=AzureChatOpenAI(
-    openai_api_version=openai_apiverson,
-    azure_deployment=openai_model_name,
-    api_key=openai_apikey
-    )
+        openai_api_version=openai_apiverson,
+        azure_deployment=openai_model_name,
+        api_key=openai_apikey
+      )
 
 @app.route("/", methods=['GET', 'POST', 'PUT'])
 def basic():
@@ -71,13 +71,11 @@ def ask():
             # return {"resp": embed_model+embed_deploy_name+embed_endpoint+embed_openai_key+openai_apiverson}
             try:
                 embeddings = AzureOpenAIEmbeddings(
-                                                    model=embed_model,
-                                                    azure_deployment=embed_deploy_name,
+                                                    model=embed_deploy_name,
                                                     azure_endpoint=embed_endpoint,
                                                     openai_api_key=embed_openai_key,
                                                     openai_api_version=openai_apiverson
                                                 )
-                # return {"response": embeddings}
                 db = Chroma.from_documents(documents=texts, embedding=embeddings)
             except:
                 return {"res": "Embeds not working"}
