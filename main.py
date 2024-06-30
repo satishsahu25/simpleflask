@@ -1,9 +1,3 @@
-# IMPORTANT
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
-# 
-
 import os
 from flask import Flask, request
 
@@ -55,27 +49,17 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 
 
-
-# prompt = ChatPromptTemplate.from_messages(
-#     [
-#         ("system", "You are an assistant for question-answering tasks"),
-#         ("human", "{input}"),
-#     ]
-# )
-
-@app.route("/ask",methods=['GET','POST'])
+@app.route("/ask",methods=['GET', 'POST', 'PUT'])
 def ask():
     query = request.args.get('query', default=None, type=str)
     user_id = request.args.get('user_id', default=None, type=str)
     file_url = request.args.get('file_url', default="x", type=str)
     if file_url != "x":
         documents = extract_text(file_url)
-        # return {"response": documents}
         # try:
         if documents==None:
              return {"response": "Not a txt/pdf file!"}
         else:
-            
             # chunking --------------
             text_splitter = CharacterTextSplitter(chunk_size=800,chunk_overlap=20)
             texts = text_splitter.split_documents(documents) 
@@ -124,9 +108,9 @@ def ask():
         # except:
         #         return {"response": "error in getting file"}
     else:
-            query = remove_sensitive_info(query)
-            return {"response": RAG(query, user_id)}
-
+        query = remove_sensitive_info(query)
+        return {"response": RAG(query, user_id)}
+        
 
 if __name__ == '__main__':
   app.run(host="0.0.0.0", debug=True, port=8000)
